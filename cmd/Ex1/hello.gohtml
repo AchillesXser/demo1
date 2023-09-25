@@ -1,0 +1,21 @@
+
+<h1>Hello, {{.Name}}</h1>
+<p>His age is {{.Age}}</p>
+<p>His Visitor Number is {{ .Mata.Visitors}} {{.Bio}}</p>
+
+<a href="
+	   {{if eq .Name "李毅"}}
+	     http://baidu.com
+	   {{else}}
+	     http://google.com
+	   {{end}}
+	">if语句</a>
+
+<script>
+    const user = {
+        "name": {{.Name}},
+        "age": {{.Age}},
+        "bio": {{.Bio}}
+    };
+    console.log(user);
+</script>

@@ -1,0 +1,13 @@
+<h1>显示不同数据类型的console</h1>
+
+<script>
+    const data = {
+        "int": {{ .Cint }},
+        "float": {{ .Cfloat }},
+        "slice": {{ .Cslice }},
+        "map": {{ .Cmap }},
+    }
+
+
+    console.log(data)
+</script>
