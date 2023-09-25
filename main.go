@@ -3,21 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
-
-type Router struct{}
-
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		w.Header().Set("Content-Type", "text/html;charset=GBK222")
-		fmt.Fprint(w, "<h1>Main Page</h1>")
-	case "/contact":
-		fmt.Fprint(w, "<h1>our contact</h1><a href='https://baidu.com'>contact Us</a><br>")
-	default:
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-	}
-}
 
 func main() {
 
@@ -27,24 +15,17 @@ func main() {
 	// 3. http.HandleFunc - 是自动将 func类型的函数如 homeHandler 转换成 HandlerFunc类型的方法;
 	// 	  http.HandleFunc("/", homeHandler)
 
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/contact", contactHandler)
-	http.HandleFunc("/faq", faqHandler)
-	err := http.ListenAndServe(":3000", nil)
+	r := chi.NewRouter()
+	r.Get("/", homeHandler)
+	r.Get("/contact", contactHandler)
+	r.Get("/faq", faqHandler)
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "页面不存在", http.StatusNotFound)
+	})
+
+	err := http.ListenAndServe(":3000", r)
 	if err != nil {
 		panic(err)
-	}
-}
-
-func pathHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		w.Header().Set("Content-Type", "text/html;charset=GBK222")
-		fmt.Fprint(w, "<h1>Main Page1</h1>")
-	case "/contact":
-		fmt.Fprint(w, "<h1>our contact</h1><a href='https://baidu.com'>contact Us</a><br>")
-	default:
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
 
@@ -55,7 +36,7 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=GBK222")
-	fmt.Fprint(w, "<h1>Main Page</h1>")
+	fmt.Fprint(w, "<h1>Main Page1</h1>")
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
