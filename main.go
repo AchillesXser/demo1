@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/AchillesXser/demo1/templatex"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -39,26 +40,10 @@ func main() {
 	}
 }
 
-func executeTemplate(w http.ResponseWriter, filepath string, data any) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	tpl, err := template.ParseFiles(filepath)
-	if err != nil {
-		log.Printf("解析模板错误: %v", err)
-		http.Error(w, "解析模板错误", http.StatusInternalServerError)
-		return
-	}
-
-	err = tpl.Execute(w, data)
-	if err != nil {
-		log.Printf("执行模板错误: %v", err)
-		http.Error(w, "执行模板错误", http.StatusInternalServerError)
-		return
-	}
-}
-
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	templatePath := filepath.Join("cmd", "Ex1", "hello.gohtml")
+
+	templatex.TemplateX.Parse(w, templatePath)
 
 	executeTemplate(w, templatePath, struct {
 		Name string

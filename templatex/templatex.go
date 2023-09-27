@@ -10,7 +10,7 @@ type TemplateX struct {
 	Tpl string
 }
 
-func (t TemplateX) Parse(w http.ResponseWriter, filepath string) (*template.Template, error) {
+func (t *TemplateX) Parse(w http.ResponseWriter, filepath string) (*template.Template, error) {
 	tpl, err := template.ParseFiles(filepath)
 	if err != nil {
 		log.Printf("解析模板错误: %v", err)
@@ -21,7 +21,7 @@ func (t TemplateX) Parse(w http.ResponseWriter, filepath string) (*template.Temp
 	return tpl, nil
 }
 
-func (t TemplateX) Execute(w http.ResponseWriter, tplParsed *template.Template) {
+func (t *TemplateX) Execute(w http.ResponseWriter, tplParsed *template.Template) {
 	err := tplParsed.Execute(w, nil)
 	if err != nil {
 		log.Printf("渲染模板错误: %v", err)
