@@ -1,8 +1,6 @@
 package main
 
 import (
-	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 
@@ -41,11 +39,15 @@ func main() {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	templatePath := filepath.Join("cmd", "Ex1", "hello.gohtml")
+	tplPath := filepath.Join("cmd", "Ex1", "hello.gohtml")
 
-	templatex.TemplateX.Parse(w, templatePath)
+	t := templatex.TemplateX{}
+	t, err := t.Parse(w, tplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 
-	executeTemplate(w, templatePath, struct {
+	t.Execute(w, struct {
 		Name string
 		Age  int
 		Mata struct {
@@ -58,13 +60,19 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		Mata: struct{ Visitors int }{Visitors: 8},
 		Bio:  `<script>alert("你被黑了")</script>`,
 	})
-
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	path := filepath.Join("cmd", "Ex1", "contact.gohtml")
+	tplPath := filepath.Join("cmd", "Ex1", "contact.gohtml")
 
-	executeTemplate(w, path, struct {
+	t := templatex.TemplateX{}
+	t, err := t.Parse(w, tplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	t.Execute(w, struct {
 		ContactUrl string
 	}{
 		ContactUrl: "http://baidu.com",
@@ -73,7 +81,16 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 
 func faqHandler(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Join("cmd", "Ex1", "faq.gohtml")
-	executeTemplate(w, path, struct {
+
+	t := templatex.TemplateX{}
+
+	t, err := t.Parse(w, path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	t.Execute(w, struct {
 		Version string
 		Days    int
 		Hours   int
@@ -86,7 +103,14 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 
 func articleHandler(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Join("cmd", "Ex1", "ex1.gohtml")
-	executeTemplate(w, path, struct {
+	t := templatex.TemplateX{}
+	t, err := t.Parse(w, path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	t.Execute(w, struct {
 		Cint   int
 		Cfloat float64
 		Cslice []int
